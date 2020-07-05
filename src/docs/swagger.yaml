@@ -1,0 +1,160 @@
+basePath: /
+definitions:
+  models.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  models.Group:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      update_at:
+        type: string
+    type: object
+  models.Super:
+    properties:
+      alignment:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      fullname:
+        type: string
+      groupsAssociated:
+        items:
+          $ref: '#/definitions/models.Group'
+        type: array
+      id:
+        type: string
+      image:
+        type: string
+      intelligence:
+        type: integer
+      name:
+        type: string
+      occupation:
+        type: string
+      power:
+        type: integer
+      relatives:
+        type: string
+      relativesAmount:
+        type: integer
+      update_at:
+        type: string
+    type: object
+  models.SuperCreationReq:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+host: localhost:3000
+info:
+  contact:
+    email: medson095@gmail.com
+    name: Medson Mendes
+  description: This is an API in Golang that integrate with https://superheroapi.com/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Super-Heroes API
+  version: "1.0"
+paths:
+  /api/v1/supers:
+    get:
+      consumes:
+      - application/json
+      description: list out all supers stored in database
+      parameters:
+      - description: name of one super to search
+        in: query
+        name: name
+        type: string
+      - description: side of supers that will be listed, good or bad
+        in: query
+        name: superSide
+        type: string
+      - description: id of one super
+        in: query
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/models.Super'
+              type: array
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Show all supers
+    post:
+      consumes:
+      - application/json
+      description: Create Supers one or more supers searched in SuperHeroes API at database
+      parameters:
+      - description: Super hero or villain name
+        in: body
+        name: name
+        required: true
+        schema:
+          $ref: '#/definitions/models.SuperCreationReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/models.Super'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create Supers
+  /api/v1/supers/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete one super stored in database
+      parameters:
+      - description: Super ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            type: object
+      summary: Delete one super
+swagger: "2.0"
