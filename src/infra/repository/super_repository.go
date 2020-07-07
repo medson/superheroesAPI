@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"os"
+
 	"github.com/medson/superheroesAPI/src/domain/models"
 	"github.com/medson/superheroesAPI/src/infra"
 )
@@ -80,7 +82,13 @@ func (superRepo SuperRepository) DeleteOne(super models.Super) {
 //
 func (superRepo SuperRepository) FindByName(superName string) models.Super {
 	var super models.Super
-	infra.Database.Preload("GroupsAssociated").Where("name ILIKE ?", superName).First(&super)
+
+	if os.Getenv("ENV") != "test" {
+		infra.Database.Preload("GroupsAssociated").Where("name ILIKE ?", superName).First(&super)
+	} else {
+		infra.Database.Preload("GroupsAssociated").Where("name = ?", superName).First(&super)
+	}
+
 	return super
 }
 

@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"log"
+
 	"github.com/gofiber/fiber"
 	external "github.com/medson/superheroesAPI/src/domain/external_services"
 	"github.com/medson/superheroesAPI/src/domain/models"
@@ -29,7 +31,10 @@ func (handler Handler) Create(ctx *fiber.Ctx) {
 	super := models.Super{}
 	supers := []*models.Super{}
 
-	ctx.BodyParser(&super)
+	err1 := ctx.BodyParser(&super)
+	if err1 != nil {
+		log.Fatal(err1)
+	}
 
 	data, err := external.CallSuperAPI(super.Name)
 
@@ -92,4 +97,15 @@ func (handler Handler) Destroy(ctx *fiber.Ctx) {
 	ctx.Status(200).JSON(&fiber.Map{
 		"sucess": res,
 	})
+}
+
+// Status API godoc
+// @Summary API Status
+// @Description Check application status
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} object
+// @Router /api/v1/healthCheck [get]
+func (handler Handler) Status(c *fiber.Ctx) {
+	c.Status(200).JSON(&fiber.Map{"status": "ok"})
 }

@@ -71,6 +71,19 @@ info:
   title: Super-Heroes API
   version: "1.0"
 paths:
+  /api/v1/healthCheck:
+    get:
+      consumes:
+      - application/json
+      description: Check application status
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      summary: API Status
   /api/v1/supers:
     get:
       consumes:

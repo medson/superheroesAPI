@@ -1,6 +1,8 @@
 package config
 
 import (
+	"os"
+
 	"github.com/victorgama/gopts"
 )
 
@@ -13,11 +15,12 @@ import (
 // Enviroment  - Current enviroment. Ex: dev,prod test.
 //
 type SettingsStruct struct {
-	APIPort     string `default:"3000"`
-	DatabaseURL string `default:"postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"`
-	SuperAPIURL string `default:"https://superheroapi.com/api/3256918617734157/search/"`
-	DialectDB   string `default:"postgres"`
-	Enviroment  string `default:"dev"`
+	APIPort         string `default:"3000"`
+	DatabaseURL     string `default:"postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable"`
+	SuperAPIURL     string `default:"https://superheroapi.com/api/3256918617734157/search/"`
+	TestDatabaseURL string `default:"/tmp/gorm.db"`
+	DialectDB       string `default:"postgres"`
+	Enviroment      string `default:"dev"`
 }
 
 // Settings pointer with variables values
@@ -25,5 +28,12 @@ var Settings *SettingsStruct
 
 func init() {
 	set := gopts.LoadEnvs(SettingsStruct{}).(SettingsStruct)
+	env := os.Getenv("ENV")
+
+	if env == "test" {
+		set.Enviroment = env
+		set.DialectDB = "sqlite3"
+	}
+
 	Settings = &set
 }
